@@ -1,0 +1,17 @@
+[project]
+name = "project1"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "dotenv>=0.9.9",
+    "fastembed>=0.7.4",
+    "langchain>=1.2.8",
+    "langchain-qdrant>=1.1.0",
+    "langchain-text-splitters>=1.1.0",
+    "langchain-google-genai>=2.0.8",
+    "qdrant-client>=1.16.2",
+    "sentence-transformers>=5.2.2",
+    "pydantic-settings>=2.0.0",
+]
