@@ -12,7 +12,7 @@ class Retriever:
         self.search_mode = search_mode
     def search(self, query: str, top_k : int = 5):
         search_results = self.vector_store.get_relevant_documents(query, k=top_k)
-        print(search_results)
+        # print(search_results)
         return search_results
 
 

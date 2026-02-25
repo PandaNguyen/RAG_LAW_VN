@@ -63,9 +63,9 @@ class RAGPipeline:
         chunks: List[str] = []
         for i, doc in enumerate(documents, 1):
             law_id = doc.metadata.get("law_id", "N/A")
-            aid = doc.metadata.get("aid", "N/A")
+            aaid = doc.metadata.get("aaid", "N/A")
             content = doc.page_content.strip()
-            chunks.append(f"[{i}] {law_id} - Điều {aid}\n{content}")
+            chunks.append(f"[{i}] {law_id} - Điều {aaid}\n{content}")
         return "\n\n".join(chunks)
     
     def _create_default_llm(self) -> ChatGoogleGenerativeAI:

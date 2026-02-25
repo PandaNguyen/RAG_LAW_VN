@@ -106,12 +106,13 @@ class QdrantRetriever(BaseRetriever):
             vector_name='dense',
             sparse_embedding=self.sparse_vector_embedding,
             sparse_vector_name='sparse',
-            content_payload_key='page_content',
+            content_payload_key='text',
+            metadata_payload_key='metadata',
             retrieval_mode=self.retrieve_mode
         )
     def get_relevant_documents(self, query: str, k: Optional[int] = None) -> List[Document]:
         top_k = k if k is not None else self.top_k
-        return self.store.similarity_search_with_score(query, k=top_k)
+        return self.store.similarity_search(query, k=top_k)
 
     def as_retriever(self, **kwargs) -> Any:
         """
