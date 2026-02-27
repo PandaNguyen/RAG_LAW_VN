@@ -139,7 +139,7 @@ class QdrantVDB:
                         },
                         payload={
                             "text": doc.page_content,
-                            **doc.metadata
+                            "metadata": doc.metadata
                         }
                     )
                 )
