@@ -17,7 +17,7 @@ A production-ready RAG pipeline that answers questions about Vietnamese legislat
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 - **Hybrid Search** — combines dense semantic embeddings with sparse BM25 (FastEmbed) via Qdrant's built-in fusion for higher recall
 - **Structured Citations** — every answer references the exact law ID and article number (`law_id`, `aaid`)
@@ -28,24 +28,24 @@ A production-ready RAG pipeline that answers questions about Vietnamese legislat
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```mermaid
 flowchart TD
     subgraph DATA["Data Pipeline (Ingestion)"]
-        A["📄 Legal JSON Corpus\n(private cloud / future: web crawler)"]
-        B["✂️ Chunking\n<i>QdrantVDB</i>"]
-        C["🔢 Dual Embedding\nDense: sentence-transformers\nSparse: FastEmbed BM25"]
-        D[("🗄️ Qdrant Collection\ndense + sparse vectors")]
+        A["Legal JSON Corpus (private cloud / future: web crawler)"]
+        B["Chunking QdrantVDB"]
+        C["Dual Embedding Dense: sentence-transformers Sparse: FastEmbed BM25"]
+        D[("Qdrant Collection dense + sparse vectors")]
         A --> B --> C --> D
     end
 
     subgraph QUERY["Query Pipeline (Runtime)"]
-        E["👤 User Question"]
-        F["🔍 QdrantRetriever\nhybrid / dense / sparse"]
-        G["📑 RAGPipeline\ncontext builder + prompt"]
-        H["🤖 Google Gemini\nvia LangChain"]
-        I["✅ Structured Answer\n+ Source Citations"]
+        E["User Question"]
+        F["QdrantRetriever hybrid / dense / sparse"]
+        G["RAGPipeline context builder + prompt"]
+        H["Google Gemini via LangChain"]
+        I["Structured Answer + Source Citations"]
         E --> F --> G --> H --> I
     end
 
@@ -56,7 +56,7 @@ flowchart TD
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer             | Technology                   | Role                              |
 | ----------------- | ---------------------------- | --------------------------------- |
@@ -71,7 +71,7 @@ flowchart TD
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 .
@@ -81,7 +81,7 @@ flowchart TD
 │   ├── indexing/
 │   │   └── qdrantvdb.py        # Corpus ingestion: chunk → embed → upsert
 │   ├── embedding/
-│   │   └── embedd_data.py      # VietnameseLegalEmbedding wrapper
+│   │   └── embedd_model.py      # VietnameseLegalEmbedding wrapper
 │   ├── vectorstores/
 │   │   └── qdrant_store.py     # QdrantRetriever (dense / sparse / hybrid)
 │   ├── retrieve/
@@ -98,7 +98,7 @@ flowchart TD
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -109,8 +109,8 @@ flowchart TD
 ### 1 — Clone & install
 
 ```bash
-git clone https://github.com/<your-username>/rag-law-vn.git
-cd rag-law-vn
+git clone https://github.com/PandaNguyen/RAG_LAW_VN.git
+cd RAG_LAW_VN
 
 # Recommended: uv
 uv sync
@@ -145,7 +145,7 @@ streamlit run streamlit_app.py
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 All settings are loaded from `.env` via `pydantic-settings`.
 
@@ -164,7 +164,7 @@ All settings are loaded from `.env` via `pydantic-settings`.
 
 ---
 
-## 💬 Usage
+## Usage
 
 ### Streamlit Chat UI
 
@@ -190,7 +190,7 @@ Uncomment **OPTION 2** in `main.py` to run a sample query directly through `RAGP
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 - [ ] **Web Crawler integration** — automated ingestion from official Vietnamese legal portals (e.g., thuvienphapluat.vn) into the data pipeline
 - [ ] **Reranking** — cross-encoder reranker fine-tuned on Vietnamese legal text
@@ -201,16 +201,6 @@ Uncomment **OPTION 2** in `main.py` to run a sample query directly through `RAGP
 
 ---
 
-## 🐛 Troubleshooting
-
-| Symptom                          | Cause                                               | Fix                                                                              |
-| -------------------------------- | --------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `Document.page_content` is empty | Payload key mismatch between indexing and retrieval | Ensure indexer writes `text` key and retriever uses `content_payload_key='text'` |
-| `GOOGLE_API_KEY` invalid         | Env var not loaded                                  | Check `.env`, then restart your terminal/session                                 |
-| Cannot connect to Qdrant         | Service not running / wrong port                    | Run `docker ps` and verify Qdrant is up on port `6333`                           |
-
----
-
-## 📄 License
+## License
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.

@@ -59,7 +59,7 @@ class BaseRetriever(ABC):
 
 from typing import List, Literal, Any, Optional
 from dotenv import load_dotenv
-from src.embedding.embedd_data import VietnameseLegalEmbedding
+from src.embedding.embedd_model import VietnameseLegalEmbedding
 from langchain_qdrant import QdrantVectorStore, RetrievalMode, FastEmbedSparse
 import os
 from qdrant_client import QdrantClient
