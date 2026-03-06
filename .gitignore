@@ -10,6 +10,8 @@ wheels/
 .venv
 .agent/
 .env
-
-data
-data/
+tmp
+scripts
+src/indexing/new_qdrantvdb.py
+evaluation_results.json
+evaluation_results2.json

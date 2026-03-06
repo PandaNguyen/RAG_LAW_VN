@@ -1,17 +1,10 @@
 from src.retrieve.retrieve_rerank import Retriever
 from src.vectorstores.qdrant_store import QdrantRetriever
 from src.generation.rag import RAGPipeline
-from src.indexing.qdrantvdb import QdrantVDB
+from src.indexing.new_qdrantvdb import QdrantVDB
 
 
 def main():
-    """
-    Example usage of RAG pipeline for Vietnamese legal Q&A
-    
-    Uncomment the section you want to test:
-    1. Index documents to Qdrant
-    2. Query RAG pipeline
-    """
     
     # ===== OPTION 1: Index documents to Qdrant =====
     # loader = QdrantVDB(

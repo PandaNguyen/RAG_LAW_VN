@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables"""
     
     # Qdrant
-    qdrant_url: str = "http://localhost:6333"
+    qdrant_url: Optional[str] = None
     qdrant_api_key: Optional[str] = None
     qdrant_collection_name: str = "legal_documents"
     
@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     
     # Generation (for Phase 3) - Using Gemini
     llm_provider: str = "gemini"
-    llm_model: str = "gemini-2.5-flash"
+    llm_model: str = "gemma-3-27b-it"
     llm_temperature: float = 0.0
     google_api_key: Optional[str] = None
     

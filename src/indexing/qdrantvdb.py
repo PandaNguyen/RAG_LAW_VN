@@ -9,45 +9,39 @@ from qdrant_client import QdrantClient
 from qdrant_client.models import SparseVectorParams, SparseIndexParams, PointStruct, VectorParams, Distance
 from tqdm import tqdm
 from config.config import settings
+from src.data.document_loader import load_corpus
+from src.data.unit_merger import merge_units
+from src.data.legal_splitter import split_law
 
-class SimpleJSONLoader:
-    def __init__(self, file_path: str):
-        self.file_path = file_path
 
-    def load(self) -> List[Document]:
-        if not os.path.exists(self.file_path):
-            raise FileNotFoundError(self.file_path)
+class JsonLoader:
+    def __init__(self):
+        pass
+    def build_documents(self,corpus_path: str, limit: int | None = None):
+        """
+        Full pipeline: corpus_final.json → List[Document] ready for embedding.
 
-        with open(self.file_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
+        Args:
+            corpus_path: Path to corpus_final.json
+            limit:       If set, only process first N laws (useful for testing)
 
-        documents = []
+        Returns:
+            List of LangChain Documents
+        """
+        print(f"Loading corpus: {corpus_path}")
+        laws = load_corpus(corpus_path)
+        if limit:
+            laws = laws[:limit]
+        print(f"  → {len(laws)} laws loaded")
 
-        for law in data:
-            law_id = law.get("law_id", "")
-            law_internal_id = law.get("id")
+        all_documents = []
+        for law in laws:
+            merged = merge_units(law["content"])
+            docs = split_law(law, merged)
+            all_documents.extend(docs)
 
-            for article in law.get("content", []):
-                aid = article.get("aid")
-                content = article.get("content_Article") or article.get("content", "")
-
-                if not content:
-                    continue
-
-                metadata = {
-                    "id": law_internal_id,
-                    "law_id": law_id,
-                    "aid": aid,
-                }
-
-                documents.append(
-                    Document(
-                        page_content=content,
-                        metadata=metadata,
-                    )
-                )
-
-        return documents
+        print(f"  → {len(all_documents)} chunks total")
+        return all_documents    
 
 
 class QdrantVDB:
@@ -75,16 +69,10 @@ class QdrantVDB:
         test_embed = list(self.embedding_model.embed(["test"]))[0]
         self.size_embedding = len(test_embed)
         self.file_data_path = file_data_path or "data/legal_corpus.json"
-        self.loader = SimpleJSONLoader(file_path=self.file_data_path)
+        self.loader = JsonLoader()
     def load_data(self) -> List[Document]:
-        document = self.loader.load()
-        spliter = RecursiveCharacterTextSplitter(
-            chunk_size=settings.chunk_size,
-            chunk_overlap=settings.chunk_overlap,
-            separators=["\n\n", "\n", ". ", " ", ""]
-        )
-        chunked_docs = spliter.split_documents(document)
-        return chunked_docs
+        documents = self.loader.build_documents(self.file_data_path)
+        return documents
     def initialize_client(self) -> Optional[QdrantClient]:
         try:
             self.client = QdrantClient(

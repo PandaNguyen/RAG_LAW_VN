@@ -20,18 +20,17 @@ class VietnameseLegalEmbedding(Embeddings):
         self.model = SentenceTransformer(model_name)
         self.model.max_seq_length = 2048
         print(f"load model embedding: {model_name}")
-    
-    def embed_documents(self, texts: List[str]) -> List[List[float]]:
-        """
-        Embed a list of documents.
-        
-        Args:
-            texts: List of text documents to embed
-            
-        Returns:
-            List of embedding vectors (normalized)
-        """
-        embeddings = self.model.encode(texts, convert_to_numpy=True, show_progress_bar=True, normalize_embeddings=True)
+    def _batch_dense(self, texts: List[str]) -> List[List[float]]:
+        """Batch embed với batch_size tuỳ chỉnh để tối ưu GPU memory."""
+        return self.embedding_model.embed_documents(texts)  
+    def embed_documents(self, texts: List[str], batch_size: int = 64) -> List[List[float]]:
+        embeddings = self.model.encode(
+            texts,
+            batch_size=batch_size,        
+            convert_to_numpy=True,
+            show_progress_bar=True,
+            normalize_embeddings=True,
+        )
         return embeddings.tolist()
 
     def embed_query(self, text: str) -> List[float]:

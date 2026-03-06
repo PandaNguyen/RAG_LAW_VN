@@ -94,7 +94,7 @@ CÂU HỎI: {question}
 TRẢ LỜI (theo cấu trúc sau):
 - Căn cứ pháp lý: [Trích dẫn điều luật cụ thể]
 - Nội dung quy định: [Giải thích nội dung]
-- Lưu ý: [Các điểm cần chú ý nếu có]
+- Trả lời: [Trả lời câu hỏi dựa trên căn cứ pháp lý và nội dung quy định]
 
 Trả lời:"""
         
@@ -155,14 +155,15 @@ Trả lời:"""
         
         # Format answer
         output = f"CÂU TRẢ LỜI:\n{response['result']}\n\n"
-        
         # Add sources
         if response['source_documents']:
             output += "NGUỒN THAM KHẢO:\n"
             for i, doc in enumerate(response['source_documents'], 1):
-                law_id = doc.metadata.get('law_id', 'N/A')
-                aid = doc.metadata.get('aid', 'N/A')
-                output += f"{i}. {law_id} - Điều {aid}\n"
+                law_id = doc.metadata.get('doc_number', 'N/A')
+                doc_title = doc.metadata.get('doc_title', 'N/A')
+                legal_field = doc.metadata.get('legal_field', 'N/A')
+                unit_title = doc.metadata.get('unit_title', 'N/A')
+                output += f"{i}. {law_id} - {doc_title} - {legal_field} - {unit_title}\n"
         
         return output
     
